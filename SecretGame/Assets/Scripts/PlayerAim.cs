@@ -8,9 +8,18 @@ public class PlayerAim : MonoBehaviour
     Vector3 worldPosition = Vector3.zero;
     public float distance = 5f;
     public Vector3 offset;
+    public ParticleSystem muzzleFlash;
     // Start is called before the first frame update
     void Start()
     {
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            muzzleFlash.Play();
+        }
     }
 
     // Update is called once per frame
