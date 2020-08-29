@@ -78,18 +78,18 @@ public class PlayerAim : MonoBehaviour
         playerRotation.y += rotAmountX;
         cameraRotation.x -= rotAmountY;
         
-        if (cameraRotation.x <350f && cameraRotation.x > 300f)
-        {
-            cameraRotation.x = 350f;
-        }
-        else if (cameraRotation.x > 20f && cameraRotation.x < 100f)
-        {
-            cameraRotation.x = 20f;
-        }
-        else if (cameraRotation.x > 20f && cameraRotation.x < 350f)
-        {
-            cameraRotation.x = 0f;
-        }
+        //if (cameraRotation.x <350f && cameraRotation.x > 300f)
+        //{
+        //    cameraRotation.x = 350f;
+        //}
+        //else if (cameraRotation.x > 20f && cameraRotation.x < 100f)
+        //{
+        //    cameraRotation.x = 20f;
+        //}
+        //else if (cameraRotation.x > 20f && cameraRotation.x < 350f)
+        //{
+        //    cameraRotation.x = 0f;
+        //}
 
         Camera.main.transform.rotation = Quaternion.Euler(cameraRotation);
         this.transform.rotation = Quaternion.Euler(playerRotation);
