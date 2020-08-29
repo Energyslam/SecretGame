@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         animator = this.GetComponent<Animator>();
+        
     }
 
     void Update()
@@ -34,8 +35,19 @@ public class PlayerMovement : MonoBehaviour
             }
             currentMovementSpeed += movementSpeedChange;
             currentMovementSpeedAnim += movementSpeedChange;
-            currentMovementSpeedAnim = Mathf.Clamp(currentMovementSpeedAnim, -1f, 1f);
-            currentMovementSpeed = Mathf.Clamp(currentMovementSpeed, -1f, 1f);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                currentMovementSpeed += movementSpeedChange;
+                currentMovementSpeed += movementSpeedChange;
+                currentMovementSpeedAnim = Mathf.Clamp(currentMovementSpeedAnim, -1f, 2f);
+                currentMovementSpeed = Mathf.Clamp(currentMovementSpeed, -1f, 2f);
+            }
+            else
+            {
+                currentMovementSpeedAnim = Mathf.Clamp(currentMovementSpeedAnim, -1f, 1f);
+                currentMovementSpeed = Mathf.Clamp(currentMovementSpeed, -1f, 1f);
+            }
+
             this.transform.Translate(this.transform.forward * Time.deltaTime * currentMovementSpeed * maxMovementSpeed, Space.World);
         }
 
@@ -64,8 +76,7 @@ public class PlayerMovement : MonoBehaviour
             currentStrafeSpeedAnim += strafeSpeedChane;
             currentStrafeSpeedAnim = Mathf.Clamp(currentStrafeSpeedAnim, -1f, 1f);
             currentStrafeSpeed = Mathf.Clamp(currentStrafeSpeed, -1f, 1f);
-            //this.transform.Translate(this.transform.right * Time.deltaTime * currentStrafeSpeed * maxStrafeSpeed, Space.World);
-            this.transform.Rotate(0f, maxStrafeSpeed * currentStrafeSpeed * Time.deltaTime, 0f, Space.Self);
+            this.transform.Translate(this.transform.right * Time.deltaTime * currentStrafeSpeed * maxStrafeSpeed, Space.World);
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -79,8 +90,7 @@ public class PlayerMovement : MonoBehaviour
             currentStrafeSpeedAnim -= strafeSpeedChane;
             currentStrafeSpeedAnim = Mathf.Clamp(currentStrafeSpeedAnim, -1f, 1f);
             currentStrafeSpeed = Mathf.Clamp(currentStrafeSpeed, -1f, 1f);
-            //this.transform.Translate(this.transform.right * Time.deltaTime * currentStrafeSpeed * maxStrafeSpeed, Space.World);
-            this.transform.Rotate(0f, maxStrafeSpeed * currentStrafeSpeed * Time.deltaTime, 0f, Space.Self);
+            this.transform.Translate(this.transform.right * Time.deltaTime * currentStrafeSpeed * maxStrafeSpeed, Space.World);
         }
 
         animator.SetFloat("StrafeSpeed", currentStrafeSpeedAnim);
