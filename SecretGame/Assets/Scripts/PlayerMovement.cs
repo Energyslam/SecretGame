@@ -93,6 +93,11 @@ public class PlayerMovement : MonoBehaviour
             this.transform.Translate(this.transform.right * Time.deltaTime * currentStrafeSpeed * maxStrafeSpeed, Space.World);
         }
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            animator.SetTrigger("ThrowGrenade");
+        }
+
         animator.SetFloat("StrafeSpeed", currentStrafeSpeedAnim);
         animator.SetFloat("ForwardSpeed", currentMovementSpeedAnim);
         DiminishMovementSpeed();

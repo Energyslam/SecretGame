@@ -28,7 +28,7 @@ public class PlayerAim : MonoBehaviour
         {
             Fire();
         }
-
+        HandleCursorLock();
         RotateCamera();
     }
 
@@ -98,6 +98,11 @@ public class PlayerAim : MonoBehaviour
 
     void LateUpdate()
     {
+        if (Cursor.lockState != CursorLockMode.Locked)
+        {
+            return;
+        }
+        Debug.Log("aaa" + Cursor.lockState);
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         chest.LookAt(ray.GetPoint(distance));
