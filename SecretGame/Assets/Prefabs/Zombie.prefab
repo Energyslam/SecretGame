@@ -2489,3 +2489,4 @@ MonoBehaviour:
   currentHealth: 0
   blood: {fileID: 948330714347933958, guid: f6664e377443f7043a8f04dea6589c32, type: 3}
   healthBar: {fileID: 7540925967633615179}
+  redBar: {fileID: 4447350641464057671}

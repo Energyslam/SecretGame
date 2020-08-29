@@ -6,7 +6,9 @@ public class SpawnManager : MonoBehaviour
 {
     public List<SpawnPoint> spawnPoints;
     public GameObject demon;
-    // Start is called before the first frame update
+
+    int spawnedMonsters = 0;
+    float delayBetweenSpawn = 2f;
     void Start()
     {
         foreach(Transform t in transform)
@@ -23,12 +25,20 @@ public class SpawnManager : MonoBehaviour
 
     public void SpawnMonsterAtRandomLocation()
     {
+        spawnedMonsters++;
         int totalSpawnPoints = spawnPoints.Count;
         Debug.Log("total" + totalSpawnPoints);
         int randomNumber = Random.Range(0, totalSpawnPoints);
         Debug.Log("random" + randomNumber);
         spawnPoints[randomNumber].SpawnMonster();
 
-        Invoke("SpawnMonsterAtRandomLocation", 2f);
+        if (spawnedMonsters > 10)
+        {
+            spawnedMonsters = 0;
+            delayBetweenSpawn -= 0.1f;
+            delayBetweenSpawn = Mathf.Clamp(delayBetweenSpawn, 0.3f, 2f);
+        }
+
+        Invoke("SpawnMonsterAtRandomLocation", delayBetweenSpawn);
     }
 }

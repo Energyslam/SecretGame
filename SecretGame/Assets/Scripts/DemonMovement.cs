@@ -14,6 +14,8 @@ public class DemonMovement : MonoBehaviour
     public int currentHealth;
     public GameObject blood;
     public Image healthBar;
+    public Image redBar;
+    bool dead;
     void Start()
     {
         currentHealth = maximumHealth;
@@ -27,6 +29,7 @@ public class DemonMovement : MonoBehaviour
 
     void Update()
     {
+        if (dead) return;
         if (currentMovementSpeed < 1f)
         {
             currentMovementSpeed += movementSpeedIncrease;
@@ -41,25 +44,30 @@ public class DemonMovement : MonoBehaviour
 
     public void HitReaction(int damage, Vector3 hitPosition)
     {
+        if (dead) return;
         currentHealth -= damage;
+        healthBar.fillAmount = (float)currentHealth / (float)maximumHealth;
+        GameObject bloodGO = Instantiate(blood, hitPosition, Quaternion.identity);
+        Destroy(bloodGO, 1f);
+        currentMovementSpeed = 0;
         if (currentHealth <= 0)
         {
             Die();
+            return;
         }
-        else
-        {
-            healthBar.fillAmount = (float)currentHealth / (float)maximumHealth;
-            GameObject bloodGO = Instantiate(blood, hitPosition, Quaternion.identity);
-            Destroy(bloodGO, 1f);
-            currentMovementSpeed = 0;
+
             animator.SetTrigger("Hit");
-        }
         //Vector3 bloodRotation = Vector3.Angle(this.transform.forward, this.transform.position - hitPosition)
 
     }
 
     public void Die()
     {
-        Destroy(this.gameObject);
+        dead = true;
+        redBar.gameObject.SetActive(false);
+        this.GetComponent<CapsuleCollider>().enabled = false;
+        animator.SetTrigger("Die");
+        GameManager.Instance.UpdateScore(10);
+        Destroy(this.gameObject, 2f);
     }
 }

@@ -23,7 +23,7 @@ public class PlayerAim : MonoBehaviour
     }
 
     private void Update()
-    {
+    {   
         if (Input.GetMouseButton(0) && Time.time > nextFire)
         {
             Fire();
@@ -41,13 +41,13 @@ public class PlayerAim : MonoBehaviour
 
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.gameObject.CompareTag("Demon"))
             {
                 hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(10, hit.point);
             }
+            Debug.Log("hit");
         }
 
     }
@@ -102,6 +102,6 @@ public class PlayerAim : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         chest.LookAt(ray.GetPoint(distance));
         chest.rotation *= Quaternion.Euler(offset);
-        Debug.DrawRay(rifleMuzzle.position, rifleMuzzle.forward, Color.red);
+        Debug.DrawRay(rifleMuzzle.position, rifleMuzzle.forward * 3f, Color.red);
     }
 }
