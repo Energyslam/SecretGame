@@ -2428,7 +2428,7 @@ Transform:
   m_GameObject: {fileID: 9145399990049502016}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.007788, y: 0.00000023841858, z: -1.8680313}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.6366, y: 1.6366, z: 1.6366}
   m_Children:
   - {fileID: 3423285887262675417}
   - {fileID: 4175257649811343726}
@@ -2482,7 +2482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  maximumMovementSpeed: 2
+  maximumMovementSpeed: 3
   currentMovementSpeed: 0
   movementSpeedIncrease: 0.005
   maximumHealth: 100

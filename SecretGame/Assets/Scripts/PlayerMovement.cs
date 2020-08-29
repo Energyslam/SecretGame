@@ -98,6 +98,11 @@ public class PlayerMovement : MonoBehaviour
             animator.SetTrigger("ThrowGrenade");
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            animator.SetTrigger("Reload");
+        }
+
         animator.SetFloat("StrafeSpeed", currentStrafeSpeedAnim);
         animator.SetFloat("ForwardSpeed", currentMovementSpeedAnim);
         DiminishMovementSpeed();
@@ -141,16 +146,16 @@ public class PlayerMovement : MonoBehaviour
 
         float diminishSpeed = 0.01f;
 
-        if (currentStrafeSpeedAnim > 0f)
+        if (currentStrafeSpeed > 0f)
         {
-            currentStrafeSpeedAnim -= diminishSpeed;
-            Mathf.Clamp(currentStrafeSpeedAnim, 0f, 1f);
+            currentStrafeSpeed -= diminishSpeed;
+            Mathf.Clamp(currentStrafeSpeed, 0f, 1f);
         }
 
-        else if (currentStrafeSpeedAnim < 0f)
+        else if (currentStrafeSpeed < 0f)
         {
-            currentStrafeSpeedAnim += diminishSpeed;
-            Mathf.Clamp(currentStrafeSpeedAnim, -1f, 0f);
+            currentStrafeSpeed += diminishSpeed;
+            Mathf.Clamp(currentStrafeSpeed, -1f, 0f);
         }
 
         if (currentStrafeSpeedAnim > 0f)

@@ -30,6 +30,11 @@ public class DemonMovement : MonoBehaviour
     void Update()
     {
         if (dead) return;
+        Move();
+    }
+
+    void Move()
+    {
         if (currentMovementSpeed < 1f)
         {
             currentMovementSpeed += movementSpeedIncrease;
@@ -56,7 +61,8 @@ public class DemonMovement : MonoBehaviour
             return;
         }
 
-            animator.SetTrigger("Hit");
+        animator.SetTrigger("Hit");
+        //TOOD: turn blood so it always faces outwards -> can do hit decals after
         //Vector3 bloodRotation = Vector3.Angle(this.transform.forward, this.transform.position - hitPosition)
 
     }

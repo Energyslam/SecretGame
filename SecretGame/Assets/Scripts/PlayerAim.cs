@@ -12,6 +12,7 @@ public class PlayerAim : MonoBehaviour
     public float mouseSensitivity = 1f;
     public float fireRate = 0.03f;
     private float nextFire = 0.0f;
+    public int damage = 10;
     Animator animator;
     AudioSource audio;
     public Transform rifleMuzzle;
@@ -41,15 +42,14 @@ public class PlayerAim : MonoBehaviour
 
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //TODO: Implement a better system for hit registration
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.gameObject.CompareTag("Demon"))
             {
-                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(10, hit.point);
+                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
             }
-            Debug.Log("hit");
         }
-
     }
 
     void HandleCursorLock()
@@ -98,15 +98,21 @@ public class PlayerAim : MonoBehaviour
 
     void LateUpdate()
     {
-        if (Cursor.lockState != CursorLockMode.Locked)
+        if (Cursor.lockState != CursorLockMode.Locked) //&& WorldState._instance.GetCurrentState != WorldState.State.UNDERWORLD)
         {
             return;
         }
-        Debug.Log("aaa" + Cursor.lockState);
+        else
+        {
+            RotateSpine();
+        }
+    }
+
+    void RotateSpine()
+    {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         chest.LookAt(ray.GetPoint(distance));
         chest.rotation *= Quaternion.Euler(offset);
-        Debug.DrawRay(rifleMuzzle.position, rifleMuzzle.forward * 3f, Color.red);
     }
 }
