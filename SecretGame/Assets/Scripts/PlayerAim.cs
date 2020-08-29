@@ -38,6 +38,18 @@ public class PlayerAim : MonoBehaviour
         muzzleFlash.Play();
         animator.SetTrigger("Shoot");
         audio.Play();
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("Demon"))
+            {
+                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(10, hit.point);
+            }
+        }
+
     }
 
     void HandleCursorLock()
