@@ -649,7 +649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6512995a4a991b45bceebada9029669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
+  currentState: 1
   transformTime: 1
   overworldObjects: {fileID: 856816293}
   underworldObjects: {fileID: 2114916993}
