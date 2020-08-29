@@ -4,16 +4,16 @@ using UnityEngine;
 
 public interface IObserver
 {
-    void AddObservable(IObservable obs);
+    void AddObservable(IObservable go);
 
-    void RemoveObservable(IObservable obs);
+    void RemoveObservable(IObservable go);
 
-    void NotifyAllObservables();
+    void NotifyAllObservables(WorldState.State state);
 }
 
 public interface IObservable
 {
     void SubscribeToObserver();
 
-    void Notify();
+    void Notify(WorldState.State state);
 }

@@ -25,7 +25,7 @@ public class WorldState : MonoBehaviour, IObserver
     [SerializeField]
     private GameObject overworldObjects, underworldObjects;
 
-    private List<IObservable> observables;
+    private List<IObservable> observables = new List<IObservable>();
 
     // Update is called once per frame
     void Update()
@@ -45,6 +45,7 @@ public class WorldState : MonoBehaviour, IObserver
 
     public void ChangeCurrentState(State newState)
     {
+        NotifyAllObservables(GetCurrentState());
         currentState = State.TRANSFORMING;
 
         if (newState == State.OVERWORLD)
@@ -66,22 +67,27 @@ public class WorldState : MonoBehaviour, IObserver
         return currentState;
     }
 
+    public float GetTransformTime()
+    {
+        return transformTime;
+    }
+
     private IEnumerator TransformWorld(State newState)
     {
         yield return new WaitForSeconds(transformTime);
         currentState = newState;
     }
 
-    public void AddObservable(IObservable obs)
+    public void AddObservable(IObservable go)
     {
-        observables.Add(obs);
+        observables.Add(go);
     }
 
-    public void RemoveObservable(IObservable obs)
+    public void RemoveObservable(IObservable go)
     {
         try
         {
-            observables.Remove(obs);
+            observables.Remove(go);
         }
         catch
         {
@@ -89,11 +95,11 @@ public class WorldState : MonoBehaviour, IObserver
         }
     }
 
-    public void NotifyAllObservables()
+    public void NotifyAllObservables(WorldState.State state)
     {
         for (int i = 0; i < observables.Count; i++)
         {
-            observables[i].Notify();
+            observables[i].Notify(state);
         }
     }
 }
