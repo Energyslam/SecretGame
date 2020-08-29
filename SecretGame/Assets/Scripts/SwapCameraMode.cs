@@ -27,14 +27,22 @@ public class SwapCameraMode : MonoBehaviour, IObservable
 
     private void MoveToTopDown()
     {
+        animator.enabled = true;
         animator.SetFloat("Speed", moveSpeed); 
         animator.SetTrigger("PlayTopDown");
     }
 
     private void MoveToShoulder()
     {
+        animator.enabled = true;
         animator.SetFloat("Speed", moveSpeed);
         animator.SetTrigger("PlayShoulder");
+        Invoke("ToggleAnimator", moveSpeed);
+    }
+
+    private void ToggleAnimator()
+    {
+        animator.enabled = !animator.enabled;
     }
 
     public void SubscribeToObserver()
@@ -48,5 +56,7 @@ public class SwapCameraMode : MonoBehaviour, IObservable
         SubscribeToObserver();
 
         moveSpeed = WorldState._instance.GetTransformTime();
+
+        animator.enabled = false;
     }
 }
