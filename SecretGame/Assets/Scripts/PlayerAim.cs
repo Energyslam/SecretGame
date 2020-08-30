@@ -14,17 +14,28 @@ public class PlayerAim : MonoBehaviour
     public float fireRate = 0.03f;
     private float nextFire = 0.0f;
 
-    public float recoilRate = 0.03f;
     private float nextRecoil = 0.0f;
     public int damage = 10;
     Animator animator;
     AudioSource audio;
     public Transform rifleMuzzle;
 
-    public float recoilIntensity = 20f;
-    public int recoilDuration = 3;
+    public float recoilIntensity = 2f;
+    public int recoilDuration = 10;
     public int currentRecoilDuration = 0;
     public bool recoiling;
+
+    Quaternion tempChest = Quaternion.identity;
+
+
+
+    public enum WeaponType
+    {
+        Rifle,
+        Shotgun
+    }
+
+    public WeaponType weaponType = WeaponType.Rifle;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -33,19 +44,37 @@ public class PlayerAim : MonoBehaviour
     }
 
     private void Update()
-    {   
+    {
         if (Input.GetMouseButton(0) && Time.time > nextFire)
         {
             Fire();
+            Recoil();
         }
         HandleCursorLock();
         RotateCamera();
     }
 
+    void SaveCurrentSpinePosition()
+    {
+        tempChest = chest.rotation;
+    }
+
     void Fire()
     {
+        if (weaponType == WeaponType.Rifle)
+        {
+            FireRifle();
+        }
+        else if (weaponType == WeaponType.Shotgun)
+        {
+            FireShotgun();
+        }
+    }
+
+    void FireRifle()
+    {
+        //TODO: make fire into script on weapon itself for easier expansion.
         nextFire = Time.time + fireRate;
-        Recoil();
         muzzleFlash.Play();
         animator.SetTrigger("Shoot");
         audio.Play();
@@ -60,6 +89,40 @@ public class PlayerAim : MonoBehaviour
                 hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
             }
         }
+    }
+
+
+
+    void FireShotgun()
+    {
+        //TODO: make fire into script on weapon itself for easier expansion.
+        nextFire = Time.time + fireRate;
+        muzzleFlash.Play();
+        animator.SetTrigger("Shoot");
+        audio.Play();
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //TODO: Implement a better system for hit registration
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("Demon"))
+            {
+                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
+            }
+        }
+    }
+
+    public void ChangeToRifle()
+    {
+        fireRate = 0.1f;
+        damage = 10;
+    }
+
+    public void ChangeToShotgun()
+    {
+        fireRate = 0.4f;
+        damage = 30;
     }
 
     void Recoil()
@@ -81,6 +144,7 @@ public class PlayerAim : MonoBehaviour
 
     void RotateCamera()
     {
+        if (Cursor.lockState != CursorLockMode.Locked) return;
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
@@ -92,7 +156,7 @@ public class PlayerAim : MonoBehaviour
 
         playerRotation.y += rotAmountX;
         cameraRotation.x -= rotAmountY;
-        
+
         //if (cameraRotation.x <350f && cameraRotation.x > 300f)
         //{
         //    cameraRotation.x = 350f;
@@ -141,10 +205,12 @@ public class PlayerAim : MonoBehaviour
     }
     void RotateSpine()
     {
+
         if (recoiling)
         {
             LookAtRecoil();
             currentRecoilDuration++;
+            SaveCurrentSpinePosition();
             if (currentRecoilDuration > recoilDuration)
             {
                 currentRecoilDuration = 0;
