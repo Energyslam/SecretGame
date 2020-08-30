@@ -51,10 +51,12 @@ public class WorldState : MonoBehaviour, IObserver
         if (newState == State.OVERWORLD)
         {
             underworldObjects.SetActive(false);
+            overworldObjects.SetActive(true);
         }
         else if (newState == State.UNDERWORLD)
         {
             overworldObjects.SetActive(false);
+            underworldObjects.SetActive(true);
         }
 
         // Spawn transform effect
