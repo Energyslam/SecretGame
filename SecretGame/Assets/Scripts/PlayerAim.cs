@@ -12,6 +12,7 @@ public class PlayerAim : MonoBehaviour
     public float mouseSensitivity = 1f;
     public float fireRate = 0.03f;
     private float nextFire = 0.0f;
+    public int damage = 10;
     Animator animator;
     AudioSource audio;
     public Transform rifleMuzzle;
@@ -23,12 +24,12 @@ public class PlayerAim : MonoBehaviour
     }
 
     private void Update()
-    {
+    {   
         if (Input.GetMouseButton(0) && Time.time > nextFire)
         {
             Fire();
         }
-
+        HandleCursorLock();
         RotateCamera();
     }
 
@@ -38,6 +39,17 @@ public class PlayerAim : MonoBehaviour
         muzzleFlash.Play();
         animator.SetTrigger("Shoot");
         audio.Play();
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //TODO: Implement a better system for hit registration
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("Demon"))
+            {
+                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
+            }
+        }
     }
 
     void HandleCursorLock()
@@ -66,18 +78,18 @@ public class PlayerAim : MonoBehaviour
         playerRotation.y += rotAmountX;
         cameraRotation.x -= rotAmountY;
         
-        if (cameraRotation.x <350f && cameraRotation.x > 300f)
-        {
-            cameraRotation.x = 350f;
-        }
-        else if (cameraRotation.x > 20f && cameraRotation.x < 100f)
-        {
-            cameraRotation.x = 20f;
-        }
-        else if (cameraRotation.x > 20f && cameraRotation.x < 350f)
-        {
-            cameraRotation.x = 0f;
-        }
+        //if (cameraRotation.x <350f && cameraRotation.x > 300f)
+        //{
+        //    cameraRotation.x = 350f;
+        //}
+        //else if (cameraRotation.x > 20f && cameraRotation.x < 100f)
+        //{
+        //    cameraRotation.x = 20f;
+        //}
+        //else if (cameraRotation.x > 20f && cameraRotation.x < 350f)
+        //{
+        //    cameraRotation.x = 0f;
+        //}
 
         Camera.main.transform.rotation = Quaternion.Euler(cameraRotation);
         this.transform.rotation = Quaternion.Euler(playerRotation);
@@ -86,10 +98,21 @@ public class PlayerAim : MonoBehaviour
 
     void LateUpdate()
     {
+        if (Cursor.lockState != CursorLockMode.Locked) //&& WorldState._instance.GetCurrentState != WorldState.State.UNDERWORLD)
+        {
+            return;
+        }
+        else
+        {
+            RotateSpine();
+        }
+    }
+
+    void RotateSpine()
+    {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         chest.LookAt(ray.GetPoint(distance));
         chest.rotation *= Quaternion.Euler(offset);
-        Debug.DrawRay(rifleMuzzle.position, rifleMuzzle.forward, Color.red);
     }
 }
