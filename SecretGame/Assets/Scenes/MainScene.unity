@@ -3135,6 +3135,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548215, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: strafeSpeedChane
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548215, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: movementSpeedChange
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: recoilDelay
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: recoil
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: duration
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: fireRate
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: recoilDuration
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659613332851548217, guid: b498411176044e84a93a6d464b2890cc, type: 3}
+      propertyPath: recoilIntensity
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1991839928773651792, guid: b498411176044e84a93a6d464b2890cc, type: 3}
       propertyPath: m_Name
       value: Player

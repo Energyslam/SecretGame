@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerAim : MonoBehaviour
 {
@@ -12,10 +13,18 @@ public class PlayerAim : MonoBehaviour
     public float mouseSensitivity = 1f;
     public float fireRate = 0.03f;
     private float nextFire = 0.0f;
+
+    public float recoilRate = 0.03f;
+    private float nextRecoil = 0.0f;
     public int damage = 10;
     Animator animator;
     AudioSource audio;
     public Transform rifleMuzzle;
+
+    public float recoilIntensity = 20f;
+    public int recoilDuration = 3;
+    public int currentRecoilDuration = 0;
+    public bool recoiling;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -36,6 +45,7 @@ public class PlayerAim : MonoBehaviour
     void Fire()
     {
         nextFire = Time.time + fireRate;
+        Recoil();
         muzzleFlash.Play();
         animator.SetTrigger("Shoot");
         audio.Play();
@@ -50,6 +60,11 @@ public class PlayerAim : MonoBehaviour
                 hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
             }
         }
+    }
+
+    void Recoil()
+    {
+        recoiling = true;
     }
 
     void HandleCursorLock()
@@ -108,11 +123,37 @@ public class PlayerAim : MonoBehaviour
         }
     }
 
-    void RotateSpine()
+
+    void LookAtMouse()
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         chest.LookAt(ray.GetPoint(distance));
         chest.rotation *= Quaternion.Euler(offset);
+    }
+
+    void LookAtRecoil()
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        chest.LookAt(ray.GetPoint(distance * recoilIntensity));
+        chest.rotation *= Quaternion.Euler(offset);
+    }
+    void RotateSpine()
+    {
+        if (recoiling)
+        {
+            LookAtRecoil();
+            currentRecoilDuration++;
+            if (currentRecoilDuration > recoilDuration)
+            {
+                currentRecoilDuration = 0;
+                recoiling = false;
+            }
+        }
+        if (!recoiling)
+        {
+            LookAtMouse();
+        }
     }
 }
