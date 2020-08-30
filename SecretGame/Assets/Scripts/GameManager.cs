@@ -31,4 +31,21 @@ public class GameManager : MonoBehaviour
         score += points;
         scoreText.text = "Score: " + score;
     }
+
+    private void Update()
+    {
+        HandleCursorLock();
+    }
+
+    void HandleCursorLock()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
 }

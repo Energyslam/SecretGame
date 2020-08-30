@@ -9,26 +9,27 @@ public class PlayerAim : MonoBehaviour
     Vector3 worldPosition = Vector3.zero;
     public float distance = 5f;
     public Vector3 offset;
-    public ParticleSystem muzzleFlash;
+    //public ParticleSystem muzzleFlash;
     public float mouseSensitivity = 1f;
-    public float fireRate = 0.03f;
+    //public float fireRate = 0.03f;
     private float nextFire = 0.0f;
 
     private float nextRecoil = 0.0f;
-    public int damage = 10;
+    //public int damage = 10;
     Animator animator;
     AudioSource audio;
-    public Transform rifleMuzzle;
+    //public Transform rifleMuzzle;
 
-    public float recoilIntensity = 2f;
-    public int recoilDuration = 10;
+    //public float recoilIntensity = 2f;
+    //public int recoilDuration = 10;
     public int currentRecoilDuration = 0;
     public bool recoiling;
 
+    [SerializeField]Gun rifle;
+    [SerializeField]Gun shotgun;
+
+    [SerializeField]Gun currentGun;
     Quaternion tempChest = Quaternion.identity;
-
-
-
     public enum WeaponType
     {
         Rifle,
@@ -41,16 +42,36 @@ public class PlayerAim : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         animator = GetComponent<Animator>();
         audio = this.GetComponent<AudioSource>();
+        AssignInitialGun();
+    }
+
+    void AssignInitialGun()
+    {
+        if (weaponType == WeaponType.Rifle)
+        {
+            currentGun = rifle;
+        }
+        else if (weaponType == WeaponType.Shotgun)
+        {
+            currentGun = shotgun;
+        }
+        if (!currentGun.gameObject.activeInHierarchy)
+        {
+            currentGun.gameObject.SetActive(true);
+        }
     }
 
     private void Update()
     {
-        if (Input.GetMouseButton(0) && Time.time > nextFire)
+        if (SwitchWeapons())
+        {
+
+        }
+        else if (Input.GetMouseButton(0) && Time.time > nextFire)
         {
             Fire();
             Recoil();
         }
-        HandleCursorLock();
         RotateCamera();
     }
 
@@ -61,68 +82,8 @@ public class PlayerAim : MonoBehaviour
 
     void Fire()
     {
-        if (weaponType == WeaponType.Rifle)
-        {
-            FireRifle();
-        }
-        else if (weaponType == WeaponType.Shotgun)
-        {
-            FireShotgun();
-        }
-    }
-
-    void FireRifle()
-    {
-        //TODO: make fire into script on weapon itself for easier expansion.
-        nextFire = Time.time + fireRate;
-        muzzleFlash.Play();
-        animator.SetTrigger("Shoot");
-        audio.Play();
-
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //TODO: Implement a better system for hit registration
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.CompareTag("Demon"))
-            {
-                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
-            }
-        }
-    }
-
-
-
-    void FireShotgun()
-    {
-        //TODO: make fire into script on weapon itself for easier expansion.
-        nextFire = Time.time + fireRate;
-        muzzleFlash.Play();
-        animator.SetTrigger("Shoot");
-        audio.Play();
-
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //TODO: Implement a better system for hit registration
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.CompareTag("Demon"))
-            {
-                hit.collider.gameObject.GetComponent<DemonMovement>().HitReaction(damage, hit.point);
-            }
-        }
-    }
-
-    public void ChangeToRifle()
-    {
-        fireRate = 0.1f;
-        damage = 10;
-    }
-
-    public void ChangeToShotgun()
-    {
-        fireRate = 0.4f;
-        damage = 30;
+        nextFire = Time.time + currentGun.fireRate;
+        currentGun.Fire();
     }
 
     void Recoil()
@@ -130,17 +91,6 @@ public class PlayerAim : MonoBehaviour
         recoiling = true;
     }
 
-    void HandleCursorLock()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && Cursor.lockState == CursorLockMode.Locked)
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape) && Cursor.lockState == CursorLockMode.None)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-    }
 
     void RotateCamera()
     {
@@ -187,7 +137,6 @@ public class PlayerAim : MonoBehaviour
         }
     }
 
-
     void LookAtMouse()
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -200,7 +149,7 @@ public class PlayerAim : MonoBehaviour
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        chest.LookAt(ray.GetPoint(distance * recoilIntensity));
+        chest.LookAt(ray.GetPoint(distance * currentGun.recoilIntensity));
         chest.rotation *= Quaternion.Euler(offset);
     }
     void RotateSpine()
@@ -211,7 +160,7 @@ public class PlayerAim : MonoBehaviour
             LookAtRecoil();
             currentRecoilDuration++;
             SaveCurrentSpinePosition();
-            if (currentRecoilDuration > recoilDuration)
+            if (currentRecoilDuration > currentGun.recoilDuration)
             {
                 currentRecoilDuration = 0;
                 recoiling = false;
@@ -221,5 +170,35 @@ public class PlayerAim : MonoBehaviour
         {
             LookAtMouse();
         }
+    }
+
+    bool SwitchWeapons()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (currentGun != rifle)
+            {
+                SwitchActiveGun(rifle);
+
+            }
+        }
+
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (currentGun != shotgun)
+            {
+                SwitchActiveGun(shotgun);
+            }
+        }
+        else return false;
+        return true;
+    }
+
+    void SwitchActiveGun(Gun gun)
+    {
+        currentGun.gameObject.SetActive(false);
+        currentGun = gun;
+        currentGun.gameObject.SetActive(true);
+
     }
 }
